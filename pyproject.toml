@@ -1,0 +1,73 @@
+
+[tool.poetry]
+name = "nv-api"
+version = "0.1.0"
+description = "Controller API for NV-Cloud"
+authors = ["devst"]
+license = "MIT"
+readme = "README.md"
+#homepage = "https://github.com/devst/nv-api"
+#repository = "https://github.com/devst/nv-api"
+#documentation = "https://devst.github.io/nv-api"
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: FastAPI",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.13",
+]
+
+packages = [{ include = "nv_api" }]
+
+[tool.poetry.dependencies]
+asyncpg = '*'
+dishka = '*'
+aiogram = "3.20.0"
+redis = "*"
+python-multipart = '*'
+aiohttp = "*"
+pyjwt = "*"
+passlib = { extras = ["bcrypt"], version = "*" }
+sqlalchemy = "2.0.40"
+jose = "1.0.0"
+python = "3.13.3"
+fastapi = "0.115.12"
+uvicorn = "0.34.2"
+pydantic = "*"
+pydantic-settings = "2.9.1"
+email-validator = "2.2.0"
+
+[tool.poetry.group.test.dependencies]
+tox = "^4.25.0"
+
+[tool.poetry.scripts]
+nv-api = "src.app.main:app"
+
+[tool.ruff]
+select = ["E", "F", "W", "C", "B"]
+extend-ignore = ["E501"]
+line-length = 88
+target-version = "py311"
+exclude = ["*.ipynb", "tests/*"]
+per-file-ignores = { "__init__.py" = ["F401"] }
+
+[tool.mypy]
+files = "./src/**/*.py"
+mypy_path = "src"
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_unused_ignores = true
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_third_party = ["fastapi", "pydantic"]
+known_first_party = ["nv_api"]

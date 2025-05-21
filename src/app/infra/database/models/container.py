@@ -18,6 +18,7 @@ class Container(Base):
     name: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
     description: Mapped[Optional[str]] = mapped_column(String(512))
     tags: Mapped[list[str]] = mapped_column(JSONB, server_default="[]")
+    password: Mapped[str] = mapped_column(String, server_default="")
 
     # Конфигурация LXC (только важные статичные параметры)
     lxc_config: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default="{}")
@@ -31,7 +32,6 @@ class Container(Base):
     is_protected: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Временные метки
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default="now()")
     last_modified: Mapped[datetime] = mapped_column(
         DateTime,
         server_default="now()",
@@ -39,7 +39,7 @@ class Container(Base):
     )
 
     # Связи
-    owner: Mapped["User"] = relationship("User", back_populates="containers")
+    owner: Mapped["User"] = relationship("User", back_populates="containers", lazy='selectin')
     #project: Mapped["Project"] = relationship(back_populates="containers")
 
     # Методы доступа

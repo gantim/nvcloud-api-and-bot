@@ -18,6 +18,7 @@ class UserInDB(BaseEntity):
             description="3-50 characters, letters, numbers, underscores or hyphens"
         )
     ]
+    telegram_id: int | None = Field(default_factory=lambda: 0, title='Telegram ID')
     email: EmailStr = Field(..., title="Email Address", description="The email address used for registration. It must be a valid email format.")
     full_name: str = Field(..., title='Full Name')
     is_active: bool = Field(default=True)

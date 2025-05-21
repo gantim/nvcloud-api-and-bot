@@ -24,7 +24,7 @@ class LogIn(BaseModel):
             description="The password for the user account. It should be at least 8 characters long.",
             min_length=8,
             max_length=24,
-            pattern=r'^[A-Za-z\d]{8,}$'
+            pattern=r'^[A-Za-z\d!@#$%^&*()_+\-=\[\]{}|\\;:\'",.<>\/?]{8,}$'
         )
     ]
 

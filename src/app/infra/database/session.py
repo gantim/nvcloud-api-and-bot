@@ -11,6 +11,3 @@ SessionFactory = async_sessionmaker( # type: ignore
     class_=AsyncSession,
     expire_on_commit=False
 )
-
-def get_session() -> AsyncSession:
-    return SessionFactory()

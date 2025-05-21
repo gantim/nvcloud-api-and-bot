@@ -11,3 +11,4 @@ def get_user_service(
     uow: Annotated[AbstractUnitOfWork, Depends(get_uow)]
 ):
     return UserService(uow)
+

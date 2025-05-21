@@ -45,12 +45,10 @@ class User(Base, SoftDeleteMixin):
         server_default='{}'
     )
 
-    #user_id: Mapped[Optional[int]] = mapped_column(
-    #    BigInteger,
-    #    nullable=True,
-    #    server_default='0'
-    #)
-
-    containers: Mapped[list["Container"]] = relationship("Container", back_populates="owner")
+    containers: Mapped[list["Container"]] = relationship("Container", back_populates="owner", lazy='selectin')
+    ticketcontainers: Mapped[list["TicketContainer"]] = relationship("TicketContainer", back_populates="owner", lazy='selectin')
+    tg_user: Mapped[Optional["TgUser"]] = relationship("TgUser", back_populates="user", uselist=False, lazy='selectin')
 
 from .container import Container  # noqa: E402
+from .tg_user import TgUser  # noqa: E402
+from .ticket_container import TicketContainer  # noqa: E402

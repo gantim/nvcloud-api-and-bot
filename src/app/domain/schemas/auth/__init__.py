@@ -1,8 +1,9 @@
 from .request_auth import LogIn, SignUp
-from .response_auth import Token
+from .response_auth import Token, VerifyUser
 
 __all__ = [
     'LogIn',
     'SignUp',
-    'Token'
+    'Token',
+    'VerifyUser'
 ]

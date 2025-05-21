@@ -1,13 +1,32 @@
+from typing import Literal
+from uuid import UUID
+
 from pydantic import BaseModel, Field
 
 
+class NodeInfo(BaseModel):
+    name: str = Field(..., description='Name node')
+    rom_bytes: str = Field(..., description='Total rom in bytes')
+    ram_bytes: str = Field(..., description='Total ram in bytes')
+    cpu_load: int = Field(..., description='CPU load')
+
 class CreateTicket(BaseModel):
-    id: int = Field(..., description="Ticket ID")
+    id: UUID = Field(..., description="Ticket ID")
+
+class ContainerAdminInfo(BaseModel):
+    id: int = Field(..., description="Container VMID")
+    name: str = Field(..., description="Container host name")
+    owner_username: str = Field(..., description="Username owner this is container")
+    rom_bytes: int = Field(..., description="Rom in bytes")
+    ram_bytes: int = Field(..., description="Ram in bytes")
+    cpu_cores: int = Field(..., description="CPU cores")
+    status: Literal['stopped', 'running', 'deleted'] = Field(..., description="Status Container")
 
 
 class ContainerInfo(BaseModel):
-    id: int = Field(..., description="Container ID")
-    name: str = Field(..., description="Container name")
+    id: int = Field(..., description="Container VMID")
+    name: str = Field(..., description="Container host name")
+    status: Literal['stopped', 'running'] = Field(..., description="Status Container")
 
 
 class CpuInfo(BaseModel):

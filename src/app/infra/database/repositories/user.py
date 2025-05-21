@@ -15,7 +15,14 @@ class SQLAlchemyUserRepository(UserRepository):
         self.session: AsyncSession = session
 
     async def get(self, id: UUID):
-        ...
+        stmt = select(User).where(User.id == id)
+        result = await self.session.execute(stmt)
+        orm_user = result.scalars().first()
+
+        if orm_user:
+            return self._map_to_domain(orm_user)
+        else:
+            return None
 
     async def update(self, UserInDB) -> UserInDB: # type: ignore
         ...
@@ -60,6 +67,7 @@ class SQLAlchemyUserRepository(UserRepository):
     def _map_to_domain(self, orm_user: User) -> UserInDB:
         return UserInDB(
             id=orm_user.id,
+            telegram_id=orm_user.tg_user.chat_id if orm_user.tg_user else None,
             username=orm_user.username,
             email=orm_user.email,
             full_name=orm_user.full_name or '',
@@ -80,70 +88,3 @@ class SQLAlchemyUserRepository(UserRepository):
             updated_at=user.updated_at,
             hashed_password=user.hashed_password
         )
-
-'''
-class InMemoryUserRepository(UserRepository):
-    def __init__(self) -> None:
-        self._users = {
-            "admin": UserInDB(
-                updated_at=datetime.now(),
-                created_at=datetime.now(),
-                username='admin',
-                email="admin@nv.com",
-                hashed_password=get_password_hash("secret"),
-                is_active=True,
-                is_superuser=True,
-                full_name='A B C',
-                id=uuid4()
-            ),
-            "userd": UserInDB(
-                updated_at=datetime.now(),
-                created_at=datetime.now(),
-                username='userd',
-                email="user@nv.com",
-                hashed_password=get_password_hash("password"),
-                is_active=True,
-                is_superuser=False,
-                full_name='A C C',
-                id=uuid4()
-            )
-        }
-
-    async def get(self, id: UUID) -> Optional[UserInDB]:
-        for user in self._users.values():
-            if user.id == id:
-                return user
-        return None
-
-    async def get_by_username(self, username: str) -> UserInDB | None:
-        return self._users.get(username, None)
-
-    async def add(self, entity: UserInDB) -> UserInDB:
-        if not entity.id:
-            entity.id = uuid4()
-        if not entity.created_at:
-            entity.created_at = datetime.now()
-        if not entity.updated_at:
-            entity.updated_at = datetime.now()
-
-        self._users[entity.username] = entity
-        return entity
-
-    async def update(self, entity: UserInDB) -> UserInDB | None:
-        if entity.username in self._users:
-            self._users[entity.username] = entity
-            return entity
-        return None
-
-    async def delete(self, id: UUID) -> None:
-        for username, user in list(self._users.items()):
-            if user.id == id:
-                del self._users[username]
-                break
-
-
-in_memory_repo = InMemoryUserRepository()
-
-def get_user_repo():
-    return in_memory_repo
-'''

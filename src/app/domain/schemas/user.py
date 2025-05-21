@@ -9,3 +9,5 @@ class UserProfile(BaseModel):
     full_name: str
     total_containers: int
     registration_date: datetime
+    is_superuser: bool
+    tg_passcode: str | None

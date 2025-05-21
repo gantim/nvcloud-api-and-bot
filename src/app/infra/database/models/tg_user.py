@@ -1,8 +1,8 @@
 from typing import Any, Optional
 
-from sqlalchemy import BigInteger, Boolean, String
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import BigInteger, Boolean, ForeignKey, String
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import expression
 
 from .base import Base
@@ -10,8 +10,8 @@ from .mixins import SoftDeleteMixin
 
 
 class TgUser(Base, SoftDeleteMixin):
-    user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    username: Mapped[str] = mapped_column(
+    chat_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    username: Mapped[Optional[str]] = mapped_column(
         String(50),
         unique=True,
         nullable=False,
@@ -34,3 +34,8 @@ class TgUser(Base, SoftDeleteMixin):
         nullable=True,
         server_default='{}'
     )
+
+    user_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey('users.id'), unique=True, nullable=True)
+    user: Mapped[Optional["User"]] = relationship("User", back_populates="tg_user")
+
+from .user import User  # noqa: E402

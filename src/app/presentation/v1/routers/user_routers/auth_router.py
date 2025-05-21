@@ -2,8 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from app.domain.schemas.auth import Token
+from app.domain.schemas.auth import Token, VerifyUser
 from app.domain.use_cases.auth_user import AuthUseCase
+from app.presentation.dependencies.auth.jwt import validate_and_get_username
 from app.presentation.dependencies.use_cases import (
     get_login_user_use_case,
     get_oauth_use_case,
@@ -13,6 +14,10 @@ from app.presentation.dependencies.use_cases import (
 
 def get_auth_router() -> APIRouter:
     router = APIRouter(prefix='/auth', tags=['Authentication (OAuth2)'])
+
+    @router.post('/token/verify')
+    async def token_verify(username: Annotated[str, Depends(validate_and_get_username)]):
+        return VerifyUser(username=username)
 
     @router.post('/token', response_model=Token)
     async def oauth_token(use_case: Annotated[AuthUseCase, Depends(get_oauth_use_case)]) -> Token:
